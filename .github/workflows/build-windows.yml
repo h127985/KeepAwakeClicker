@@ -1,0 +1,44 @@
+name: Build Windows EXE
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Build Windows x64 executable
+    runs-on: windows-latest
+
+    steps:
+      - name: 取得原始碼
+        uses: actions/checkout@v4
+
+      - name: 設定 Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: 安裝 PyInstaller
+        run: python -m pip install --upgrade pip pyinstaller
+
+      - name: 建立 Windows EXE
+        run: >-
+          python -m PyInstaller
+          --noconfirm
+          --clean
+          --onefile
+          --windowed
+          --name KeepAwakeClicker
+          main.py
+
+      - name: 上傳 Windows EXE Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: KeepAwakeClicker-Windows-x64
+          path: dist/KeepAwakeClicker.exe
+          if-no-files-found: error
