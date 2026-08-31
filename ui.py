@@ -211,20 +211,35 @@ class KeepAwakeClickerApp:
         if self._closing:
             return
         self._closing = True
-        self.auto_clicker.stop()
-        self.hotkeys.stop()
-        self.keep_awake.disable()
         try:
-            save_settings(
-                {
-                    "prevent_sleep": self.prevent_sleep.get(),
-                    "prevent_display": self.prevent_display.get(),
-                    "auto_click": self.auto_click.get(),
-                    "x": self._safe_setting_int(self.x_value.get(), 0),
-                    "y": self._safe_setting_int(self.y_value.get(), 0),
-                    "interval": self._safe_setting_int(self.interval_value.get(), 30, minimum=1),
-                }
-            )
+            try:
+                self.auto_clicker.stop()
+            except Exception:
+                pass
+
+            try:
+                self.hotkeys.stop()
+            except Exception:
+                pass
+
+            try:
+                self.keep_awake.disable()
+            except Exception:
+                pass
+
+            try:
+                save_settings(
+                    {
+                        "prevent_sleep": self.prevent_sleep.get(),
+                        "prevent_display": self.prevent_display.get(),
+                        "auto_click": self.auto_click.get(),
+                        "x": self._safe_setting_int(self.x_value.get(), 0),
+                        "y": self._safe_setting_int(self.y_value.get(), 0),
+                        "interval": self._safe_setting_int(self.interval_value.get(), 30, minimum=1),
+                    }
+                )
+            except Exception:
+                pass
         finally:
             self.root.destroy()
 
